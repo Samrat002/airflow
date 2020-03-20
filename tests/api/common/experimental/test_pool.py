@@ -18,9 +18,6 @@
 # under the License.
 import six
 
-import random
-import string
-
 from airflow import models
 from airflow.models.pool import Pool
 from airflow.api.common.experimental import pool as pool_api
@@ -107,7 +104,7 @@ class TestPool(unittest.TestCase):
                                     description='')
 
     def test_create_pool_name_too_long(self):
-        long_name = ''.join(random.choices(string.ascii_lowercase, k=300))
+        long_name = 'string' * 50
         column_length = models.Pool.pool.property.columns[0].type.length
         self.assertRaisesRegex(AirflowBadRequest,
                                "^Pool name can't be more than %d characters$" % column_length,
