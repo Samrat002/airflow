@@ -79,8 +79,8 @@ class TestRenderedTaskInstanceFields(unittest.TestCase):
         (
             ClassWithCustomAttributes(
                 att1="{{ task.task_id }}", att2="{{ task.task_id }}", template_fields=["att1"]),
-            "ClassWithCustomAttributes({'att1': 'test', 'att2': '{{ task.task_id }}', "
-            "'template_fields': ['att1']})",
+            str(ClassWithCustomAttributes(
+                att1="{{ task.task_id }}", att2="{{ task.task_id }}", template_fields=["att1"])),
         ),
         (
             ClassWithCustomAttributes(nested1=ClassWithCustomAttributes(att1="{{ task.task_id }}",
@@ -90,11 +90,13 @@ class TestRenderedTaskInstanceFields(unittest.TestCase):
                                                                         att4="{{ task.task_id }}",
                                                                         template_fields=["att3"]),
                                       template_fields=["nested1"]),
-            "ClassWithCustomAttributes({'nested1': ClassWithCustomAttributes("
-            "{'att1': 'test', 'att2': '{{ task.task_id }}', 'template_fields': ['att1']}), "
-            "'nested2': ClassWithCustomAttributes("
-            "{'att3': '{{ task.task_id }}', 'att4': '{{ task.task_id }}', 'template_fields': ['att3']}), "
-            "'template_fields': ['nested1']})",
+            str(ClassWithCustomAttributes(nested1=ClassWithCustomAttributes(att1="{{ task.task_id }}",
+                                                                            att2="{{ task.task_id }}",
+                                                                            template_fields=["att1"]),
+                                          nested2=ClassWithCustomAttributes(att3="{{ task.task_id }}",
+                                                                            att4="{{ task.task_id }}",
+                                                                            template_fields=["att3"]),
+                                          template_fields=["nested1"])),
         ),
     ])
     def test_get_templated_fields(self, templated_field, expected_rendered_field):
