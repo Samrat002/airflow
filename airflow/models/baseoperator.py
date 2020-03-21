@@ -747,9 +747,10 @@ class BaseOperator(LoggingMixin):
         if isinstance(content, six.string_types):
             if any(content.endswith(ext) for ext in self.template_ext):
                 # Content contains a filepath
-                return jinja_env.get_template(content).render(**context)
+                templated_content = jinja_env.get_template(content).render(**context)
             else:
-                return jinja_env.from_string(content).render(**context)
+                templated_content = jinja_env.from_string(content).render(**context)
+            return str(templated_content) if six.PY2 else templated_content
 
         if isinstance(content, tuple):
             if type(content) is not tuple:
